@@ -21,11 +21,12 @@ def get_worker(process):
     return frame_exporter
 
 def main():
+    sys.argv = ['pre_ST3D_v2.0_00_export_frames.py', 'test_data/databases/db_AccessMath2015.xml', '-d', 'training testing']
     # usage check
     if not ConsoleUIProcess.usage_check(sys.argv):
         return
 
-    process = ConsoleUIProcess(sys.argv[1], sys.argv[2:], None, None)
+    process = ConsoleUIProcess(sys.argv[1], sys.argv[2:], None, '/data/Projects/accessmath-icfhr2018/temp')
 
     if not process.initialize():
         return

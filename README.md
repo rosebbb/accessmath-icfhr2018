@@ -15,12 +15,12 @@ For any issues, please use the github issues page or contact me at buralako _at_
 ## Dependencies
 
 Other main libraries required by our scripts include:
-  - Numpy
+  - Numpy (conda install numpy)
   - OpenCV (with ffmpeg installed for video handling)
-  - Scipy
+  - Scipy (conda install scipy)
   - PyGame (to use the ground truth annotator)
   - Caffe
-  - PyTorch (to reproduce entire paper including training)
+  - PyTorch (to reproduce entire paper including training) (conda install pytorch torchvision -c pytorch)
 
 ## To reproduce the results in the paper (Table 2):
 

@@ -12,7 +12,7 @@ class TextAnnotationExporter:
     ExportModeAllPerFrame = 0
     ExportModeUniqueBoxes = 1
 
-    def __init__(self, export_mode,  video_objects, canvas_loc, render_loc, render_size, export_dir, export_images=False):
+    def __init__(self, export_mode,  video_objects, canvas_loc, render_loc, render_size, export_dir, export_images):
         self.export_mode = export_mode
         self.img_width = None
         self.img_height = None
@@ -43,7 +43,7 @@ class TextAnnotationExporter:
         self.unique_objects_xml_tree = None
 
         # filter text annotations
-        for video_object in self.video_objects:
+        for i, video_object in enumerate(self.video_objects):
             if TextAnnotationExporter.CheckTextObject(video_object):
                 # a text region object found ...
                 self.text_objects.append(video_object)
@@ -206,6 +206,8 @@ class TextAnnotationExporter:
                 self.exported_text_objects[text_name].append(current_object)
 
     def handleFrame(self, frame, last_frame, video_idx, frame_time, current_time, frame_idx):
+        if frame_idx == 2842:
+            print(frame_idx)
         # Compute and export sample frame metadata
         speaker_loc, not_occluded_bboxes, occluded_bboxes = self.frame_visible_bboxes_state(frame_idx)
 
@@ -368,11 +370,21 @@ class TextAnnotationExporter:
 
     @staticmethod
     def FromAnnotationXML(export_mode, database, lecture, export_dir, export_images=False):
+        '''
+        Args:
+            export_mode: 0
+            database: 
+            lecture: 
+            export_dir: 
+            export_images:
+
+        '''
         # Load video annotations ....
-        # ... file name ...
+        # ... get annotation file name ...
         annotation_suffix = database.name + "_" + lecture.title.lower()
         input_prefix = database.output_annotations + "/" + annotation_suffix
-        input_main_file = input_prefix + ".xml"
+
+        input_main_file = input_prefix + ".xml" # Annotation file for this lecture
         # ... get element tree object ...
         annotation_tree = ET.parse(input_main_file)
         annotation_root = annotation_tree.getroot()
@@ -396,11 +408,12 @@ class TextAnnotationExporter:
         current_video_objects = []
         xml_video_objects_root = annotation_root.find('VideoObjects')
         xml_video_objects = xml_video_objects_root.findall('VideoObject')
-        loading_msg = " -> Loading object: {0:s} ({1:d} Key-frames)"
+        # loading_msg = " -> Loading object: {0:s} ({1:d} Key-frames)"
         for xml_video_object in xml_video_objects:
             # load logical object ...
+            # Each VideoObject has ONE Id, ONE Name and several VideoObjectLocations
             video_object = VideoObject.fromXML(xml_video_object)
-            print(loading_msg.format(video_object.name, len(video_object.locations)))
+            # print(loading_msg.format(video_object.name, len(video_object.locations)))
 
             current_video_objects.append(video_object)
 

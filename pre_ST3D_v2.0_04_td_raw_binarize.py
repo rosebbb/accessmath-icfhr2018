@@ -10,7 +10,7 @@ from AccessMath.preprocessing.user_interface.console_ui_process import ConsoleUI
 from AccessMath.preprocessing.content.MLBinarizer import MLBinarizer
 
 def process_input(process, input_data):
-    detection_results = input_data[0]
+    # detection_results = input_data[0]
 
     min_td_confidence = Parameters.TDStab_min_confidence        # 0.65
     use_ML_binarization = Parameters.TDBin_ML_binarization
@@ -78,6 +78,10 @@ def process_input(process, input_data):
 
 
 def main():
+    sys.argv = ['pre_ST3D_v2.0_04_td_raw_binarize.py', \
+        'test_data/databases/db_AccessMath2015.xml', '-d', 'testing']
+    print('sys.argv', sys.argv)
+
     # usage check
     if not ConsoleUIProcess.usage_check(sys.argv):
         return
@@ -85,7 +89,8 @@ def main():
     # TODO: read this from parameters:
     input_prefix = Parameters.Output_TextDetection
     output_prefix = Parameters.Output_Binarize
-    process = ConsoleUIProcess(sys.argv[1], sys.argv[2:], input_prefix, output_prefix)
+    # process = ConsoleUIProcess(sys.argv[1], sys.argv[2:], input_prefix, output_prefix)
+    process = ConsoleUIProcess(sys.argv[1], sys.argv[2:], None, output_prefix)
 
     if not process.initialize():
        return

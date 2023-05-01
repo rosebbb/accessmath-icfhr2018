@@ -73,6 +73,9 @@ def process_input(process, input_data):
 
 
 def main():
+    sys.argv = ['pre_ST3D_v2.0_04_td_raw_binarize.py', \
+        'test_data/databases/db_AccessMath2015.xml', '-d', 'testing']
+    print('sys.argv', sys.argv)
     #usage check
     if not ConsoleUIProcess.usage_check(sys.argv):
         return

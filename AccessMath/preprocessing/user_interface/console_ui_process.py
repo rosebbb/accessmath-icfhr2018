@@ -8,9 +8,12 @@ from AccessMath.util.misc_helper import MiscHelper
 
 
 class ConsoleUIProcess:
+    '''
+    Read xml file and process using the database info
+    '''
     def __init__(self, database_file, optional_params, input_temp_prefix, output_temp_prefix):
-        self.database_file = database_file
-        self.raw_params = optional_params
+        self.database_file = database_file #test_data/databases/db_AccessMath2015.xml
+        self.raw_params = optional_params #['-d', 'training, testing']
         self.input_temp_prefix = input_temp_prefix
         self.output_temp_prefix = output_temp_prefix
 
@@ -32,7 +35,9 @@ class ConsoleUIProcess:
             print("Invalid database file")
             return False
 
-        self.params = MiscHelper.optional_parameters(self.raw_params, 0)
+        print('num lectures', len(self.database.lectures))
+
+        self.params = MiscHelper.optional_parameters(self.raw_params, 0) # {'d': ['training', 'testing']}
 
         # process the specified dataset(s)
         if "d" in self.params:
@@ -41,7 +46,7 @@ class ConsoleUIProcess:
 
             valid_datasets = []
             for name in self.params["d"]:
-                dataset = self.database.get_dataset(name)
+                dataset = self.database.get_dataset(name) # get all the dataset(lectures) that corresponds to 'traning' or 'testing'
 
                 if dataset is None:
                     print("Invalid Dataset name <" + name + ">")
@@ -109,7 +114,17 @@ class ConsoleUIProcess:
 
     def start_video_processing(self, frames_per_second, get_worker_function, get_results_function, frames_limit=0,
                                verbose=False):
+        '''
+        self.database: read from test_data/databases/db_AccessMath2015.xml
+        '''
+        c = 0
         for lecture in self.database.lectures:
+            if c == 0:
+                c +=1
+                continue
+            c +=1
+
+            print('lecture.main_videos: ', lecture.main_videos)
             self.current_lecture = lecture
             m_videos, out_file, skip = self.get_lecture_params(lecture)
 
@@ -117,7 +132,7 @@ class ConsoleUIProcess:
                 continue
 
             # create a worker ...
-            worker = get_worker_function(self)
+            worker = get_worker_function(self) # read the current lecture xml file
 
             # execute the actual process ....
             processor = VideoProcessor(m_videos, frames_per_second)
@@ -197,6 +212,7 @@ class ConsoleUIProcess:
 
     @staticmethod
     def usage_check(argvs):
+        print(argvs)
         #usage check
         if len(argvs) < 2:
             print("Usage: python " + argvs[0] + " database [options]")
